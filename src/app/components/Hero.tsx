@@ -90,7 +90,7 @@ export default function Hero() {
           {/* Social Links */}
           <div className="flex items-center space-x-4 pt-6 text-slate-500">
             <a
-              href="https://github.com/lohitavenkatesh"
+              href="https://github.com/lohita181"
               target="_blank"
               rel="noreferrer"
               className="hover:text-emerald-400 transition-colors duration-200"

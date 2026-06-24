@@ -147,7 +147,7 @@ export default function Contact() {
               </a>
 
               <a
-                href="https://github.com/lohitavenkatesh"
+                href="https://github.com/lohita181"
                 target="_blank"
                 rel="noreferrer"
                 className="p-4 rounded-xl border border-slate-800 bg-[#080d19] hover:border-slate-700/80 hover:bg-[#0b1222] transition-all duration-300 flex flex-col justify-between h-28"
@@ -158,7 +158,7 @@ export default function Contact() {
                 </svg>
                 <div className="font-mono text-xs">
                   <span className="text-slate-500 block">GITHUB</span>
-                  <span className="text-slate-300">lohitavenkatesh</span>
+                  <span className="text-slate-300">lohita181</span>
                 </div>
               </a>
             </div>

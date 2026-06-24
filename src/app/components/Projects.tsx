@@ -13,7 +13,7 @@ export default function Projects() {
       duration: "Jan 2026 - Apr 2026",
       tech: ["Python", "Transformers", "LLaMA 3.1", "QLoRA", "ChromaDB", "RAG", "SentenceTransformers"],
       summary: "Engineered an end-to-end RAG system over 7M+ characters of complex PCB design datasheets. Fine-tuned LLaMA 3.1 8B via QLoRA to output expert hardware design responses.",
-      github: "https://github.com/lohitavenkatesh",
+      github: "https://github.com/lohita181/lohita-v-portfolio",
       details: {
         architecture: "Document extraction (PDF parsing) -> Custom text chunking -> BAAI/bge-large-en-v1.5 embeddings -> ChromaDB semantic lookup. The retrieved context is injected into a fine-tuned LLaMA 3.1 8B model.",
         metrics: [
@@ -30,7 +30,7 @@ export default function Projects() {
       duration: "Jan 2025 - Apr 2025",
       tech: ["Python", "Flask", "TensorFlow", "MobileNetV2", "PostgreSQL", "JavaScript", "HTML/CSS"],
       summary: "Built a deep-learning powered web application that classifies clothing images uploaded by users and recommends matching outfits from their stateful digital wardrobe database.",
-      github: "https://github.com/lohitavenkatesh",
+      github: "https://github.com/lohita181/lohita-v-portfolio",
       details: {
         architecture: "User uploads image -> TensorFlow/MobileNetV2 CNN categorizes apparel -> Flask-Login state engine verifies session -> SQL queries suggest matching apparel sets from PostgreSQL wardrobe table.",
         metrics: [
