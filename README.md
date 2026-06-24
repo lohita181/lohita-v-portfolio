@@ -1,88 +1,56 @@
-# Developer Portfolio: Software Engineer (Backend & AI)
+# Systems-Themed Developer Portfolio
 
-A complete, production-ready, and highly optimized developer portfolio website built for **Lohita V**. The design leverages a structured, systems-inspired layout styling her experience and projects like IDE code editors and system monitoring telemetry logs.
+Welcome to the repository for my personal portfolio website! I designed and built this website to showcase my experience in backend systems, database observability pipelines, low-level reverse engineering, and domain-specific AI integrations. 
+
+To match my passion for infrastructure and core development, I styled the website around developer environments—utilizing interactive code editors, telemetry consoles, database logs, and terminal input forms.
 
 ## Tech Stack & Architecture
 
-- **Core**: Next.js 16 (App Router)
-- **Styling**: Tailwind CSS v4 (configured via modern CSS `@theme` properties)
-- **Icons**: Lucide React
-- **Typography**: Geist Sans & Geist Mono (locally served font assets)
-- **Design Paradigm**: Systems & Developer-Centric Theme (Dark grid background, emerald/cyan metrics, interactive terminals, and responsive code-editor cards)
+- **Framework**: Next.js 16 (App Router)
+- **Styling**: Tailwind CSS v4 (utilizing inline `@theme` directives for custom matrix-grid and glow keyframes)
+- **Icons**: Lucide React & optimized custom inline SVG paths
+- **Typography**: Locally loaded Geist Sans & Geist Mono for a modern, monospaced terminal look
+- **Deployment-Ready**: Standard configurations, requiring zero environment variables to run or build.
 
-## Features
+## Interactive Features & Sections
 
-- **Hero Dashboard**: A typewriter console cycling through developer personas, backed by a simulated running script displaying real-time telemetry stats (e.g., LeetCode ratings, competitive programming accomplishments, and skills).
-- **Interactive About Terminal**: Profile summary detailing Bannari Amman Institute of Technology education (B.E. IS&E, CGPA 8.12) paired with a mock JSON editor file view.
-- **Log-Styled Work Experience**: Timeline showcasing software engineering achievements at Zoho Corp formatted like system telemetry/syslog logs.
-- **Interactive Projects Workspace**: Code-editor cards detailing StyleFit (MobileNetV2, Flask, PostgreSQL) and the PCB Industry LLM (LLaMA 3.1 8B fine-tuning, RAG ChromaDB), containing click-to-expand console windows that display actual engineering metrics and code snippets.
-- **Interactive Skills IDE**: Simulated workspace editor containing selectable files (`languages.yaml`, `frameworks.json`, `databases.conf`, `ai_ml.py`) displaying ratings with progress gauges.
-- **Interactive Command-Line Contact**: Contact form displaying simulated REST calls and server response telemetry upon message submission.
+- **Hero Terminal Dashboard**: A landing console that simulates typewriter output for my engineering focus areas, backed by a shell script that pulls LeetCode stats (400+ solved, max 1530 rating) and Zoho internship telemetry.
+- **Academic JSON Viewer (`/about`)**: A side-by-side view featuring my engineering narrative and a custom JSON viewer displaying my academic profile (B.E. Information Science and Engineering, CGPA 8.12).
+- **Telemetry Log Experience (`/experience`)**: Timeline styling my Zoho internship role like a system monitoring log (`syslog`). Details my Ghidra binary decompilation automation, Prometheus/Grafana database monitoring, self-healing cron scripts, and MySQL onboarding panels.
+- **IDE Project Tabs (`/projects`)**: Workspace-editor cards presenting my two flagship projects—**StyleFit** (Flask, MobileNetV2, PostgreSQL) and **PCB Industry LLM** (LLaMA 3.1 8B fine-tuning, ChromaDB RAG). Clicking "Analyze Pipeline Telemetry" prints real execution details like QLoRA loss curves (1.1 -> 0.62 loss) and schema lookups.
+- **Skills IDE Tree (`/skills`)**: A simulated sidebar file explorer that displays skill categories as files (`languages.yaml`, `frameworks.json`, `databases.conf`, `ai_ml.py`). Selecting a file loads its keys and shows proficiency levels via telemetry meters.
+- **REST Contact Simulator (`/contact`)**: An interactive terminal form that compiles contact inputs and simulates a Curl POST command, outputting mock HTTP network logs and packet delivery status.
 
-## Local Setup & Development
+## Local Setup & Run Guide
 
-Ensure you have Node.js (v18+ recommended) installed.
+To run this project locally, ensure you have Node.js (v18+) installed.
 
-1. **Clone the repository** (or copy folder contents to your directory)
+1. **Clone this repository**:
+   ```bash
+   git clone https://github.com/lohita181/lohita-v-portfolio.git
+   cd lohita-v-portfolio
+   ```
+
 2. **Install dependencies**:
    ```bash
    npm install
    ```
-3. **Run the local development server**:
+
+3. **Launch the local development server**:
    ```bash
    npm run dev
    ```
-4. **Open the application**:
-   Navigate to [http://localhost:3000](http://localhost:3000) on your local browser.
+   Open [http://localhost:3000](http://localhost:3000) in your browser to view the portfolio.
 
-## Building for Production
+## Production Compiling
 
-To test the production build locally:
+To build the application for production and run the optimized bundle locally:
 
 ```bash
 npm run build
 npm start
 ```
 
----
+## License
 
-## Step-by-Step Creation History
-
-Here is the exact step-by-step engineering process followed to design, code, and compile this developer portfolio:
-
-### Step 1: Content Extraction & Optimization
-- Analyzed candidate's Resume (PDF) and LinkedIn profile (PDF).
-- Classified the candidate as a **Software Engineer (AI & Backend Focus)**.
-- Refined professional accomplishments to be achievement-oriented, removing speculative post-deployment metrics to ensure resume integrity while keeping local performance highlights.
-
-### Step 2: Next.js Boilerplate Initialization
-- Bootstrapped the project in the workspace root using `create-next-app` non-interactively:
-  ```bash
-  npx -y create-next-app@latest ./ --typescript --tailwind --eslint --app --src-dir --import-alias "@/*" --use-npm --yes
-  ```
-- Configured ESLint rules, TypeScript schema, and Next.js settings.
-
-### Step 3: Typography & Metadata Setup
-- Configured `src/app/layout.tsx` to define search engine keywords, OpenGraph titles, and meta descriptions optimized for hiring managers.
-- Utilized Google Fonts via Next.js (`Geist Sans` and `Geist Mono`) to load modern developer-centric typography.
-
-### Step 4: Custom CSS & Theme Design
-- Overwrote `src/app/globals.css` with a custom systems design language under Tailwind CSS v4.
-- Defined grid backgrounds, glow animations, scrollbar overlays, terminal typography structures, and CRT scanlines.
-
-### Step 5: Lucide Icon Optimization
-- Installed `lucide-react` for standard UI shapes.
-- Designed custom inline SVGs for LinkedIn and GitHub logos, resolving dependencies issues related to brand icon deprecation in current Lucide versions.
-
-### Step 6: Component Implementation
-- **Hero Dashboard (`Hero.tsx`)**: Created the terminal typewriter simulator and the system telemetry bar displaying LeetCode statistics.
-- **Profile JSON Explorer (`About.tsx`)**: Formatted education (CGPA 8.12) and narrative bios, paired with an editor viewer showing her profile serialized in JSON.
-- **Log Timeline (`Experience.tsx`)**: Structured her Zoho internship like a system telemetry logger, using visual log markers.
-- **Project Telemetry (`Projects.tsx`)**: Created VSCode file tab headers for StyleFit and the PCB LLM, building click-to-expand widgets exposing model loss values and data flows.
-- **IDE Skill Inventory (`Skills.tsx`)**: Implemented a mock-IDE file explorer that allows clicking files like `databases.conf` to render skills as progress gauges.
-- **Message Dispatch Shell (`Contact.tsx`)**: Developed a terminal simulator where form submissions generate dynamic network and JSON outputs.
-
-### Step 7: Assembly & Verification
-- Assembled the panels in `src/app/page.tsx`, configuring a sticky navigation menu and a telemetry footer featuring a live clock widget.
-- Ran the production compiler (`npm run build`) to ensure the codebase resolves successfully with Turbopack and TypeScript.
-
+This project is open-source and available under the MIT License.
