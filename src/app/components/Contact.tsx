@@ -181,7 +181,7 @@ export default function Contact() {
               </div>
 
               {/* Form Content */}
-              {status !== "success" ? (
+              {status === "idle" || status === "sending" ? (
                 <form onSubmit={handleSend} className="p-6 space-y-4 font-mono text-xs sm:text-sm">
                   <div className="space-y-1">
                     <label htmlFor="name" className="block text-slate-500">SENDER_NAME:</label>
