@@ -95,7 +95,9 @@ export default function Home() {
               </a>
             ))}
             <a
-              href="#contact"
+              href="/resume.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
               className="px-3.5 py-1.5 rounded border border-emerald-500/30 hover:border-emerald-400 bg-emerald-500/5 hover:bg-emerald-500/10 text-emerald-400 hover:text-emerald-300 transition-all duration-300"
             >
               Resume.sh
@@ -130,7 +132,9 @@ export default function Home() {
               </a>
             ))}
             <a
-              href="#contact"
+              href="/resume.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
               onClick={() => setMobileMenuOpen(false)}
               className="w-full text-center px-4 py-2 rounded border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/10 transition-all duration-200"
             >
