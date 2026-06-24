@@ -1,13 +1,15 @@
 "use client";
 
 import React, { useState } from "react";
-import { Mail, Copy, Check, Send, Terminal, Loader2 } from "lucide-react";
+import { Mail, Copy, Check, Terminal, Cpu, Server, Network, ShieldCheck } from "lucide-react";
 
 export default function Contact() {
-  const [formData, setFormData] = useState({ name: "", email: "", message: "" });
   const [copied, setCopied] = useState(false);
-  const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
-  const [terminalOutput, setTerminalOutput] = useState<string[]>([]);
+  const [activeCommand, setActiveCommand] = useState<string | null>(null);
+  const [terminalLogs, setTerminalLogs] = useState<string[]>([
+    "System diagnostics online.",
+    "Type or click a script macro below to query system info..."
+  ]);
 
   const handleCopyEmail = () => {
     navigator.clipboard.writeText("lohitavenkatesh@gmail.com");
@@ -15,71 +17,37 @@ export default function Contact() {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleSend = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!formData.name || !formData.email || !formData.message) return;
-
-    setStatus("sending");
-    setTerminalOutput([
-      `$ ping -c 1 mail.lohita.dev`,
-      `PING mail.lohita.dev (10.0.8.24) 56(84) bytes of data.`,
-      `64 bytes from 10.0.8.24: icmp_seq=1 ttl=64 time=1.04 ms`,
-      `--- mail.lohita.dev ping statistics ---`,
-      `1 packets transmitted, 1 received, 0% packet loss`,
-      `$ curl -X POST -H "Content-Type: application/json" \\`,
-      `  -d '{"sender":"${formData.name}","email":"${formData.email}"}' \\`,
-      `  https://api.web3forms.com/submit`,
-    ]);
-
-    try {
-      // NOTE: Get your free access key by typing your email at https://web3forms.com
-      // Once you have it, replace the placeholder below with your key.
-      const accessKey = "YOUR_ACCESS_KEY_HERE"; 
-      
-      const response = await fetch("https://api.web3forms.com/submit", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        body: JSON.stringify({
-          access_key: accessKey,
-          name: formData.name,
-          email: formData.email,
-          message: formData.message,
-          subject: `Portfolio Message from ${formData.name}`,
-        }),
-      });
-
-      const result = await response.json();
-
-      if (response.status === 200 && result.success) {
-        setStatus("success");
-        setTerminalOutput((prev) => [
-          ...prev,
-          `HTTP/1.1 200 OK`,
-          `Content-Type: application/json`,
-          `Date: ${new Date().toUTCString()}`,
-          `Server: Web3Forms/1.0.0`,
-          `Connection: keep-alive`,
-          `Response Packet: {"status":"delivered","message":"Thank you, ${formData.name}. Web3Forms has dispatched this message."}`,
-        ]);
-      } else {
-        throw new Error(result.message || "Bad Request - Invalid or missing access key");
-      }
-    } catch (err: any) {
-      setStatus("error");
-      setTerminalOutput((prev) => [
-        ...prev,
-        `HTTP/1.1 500 Internal Server Error`,
-        `Content-Type: application/json`,
-        `Date: ${new Date().toUTCString()}`,
-        `Error Packet: {"status":"failed","reason":"${err.message || "Failed to dispatch message packet."}"}`,
+  const executeCommand = (cmd: "traceroute" | "sshkey" | "credentials") => {
+    setActiveCommand(cmd);
+    
+    if (cmd === "traceroute") {
+      setTerminalLogs([
+        "$ ./traceroute_lohita.sh",
+        "traceroute to lohita.dev (10.24.42.181), 30 hops max, 60 byte packets",
+        " 1  192.168.1.1 (gateway)  1.02 ms",
+        " 2  10.0.0.1 (local-isp-node)  4.35 ms",
+        " 3  182.19.45.21 (chennai-ixp-backbone)  14.20 ms",
+        " 4  172.16.88.92 (bannari-amman-campus-gw)  19.12 ms",
+        " 5  10.24.42.181 (lohita-workstation-local)  18.45 ms",
+        "Connection established. Latency: 18.45 ms. Location: Chennai, India."
+      ]);
+    } else if (cmd === "sshkey") {
+      setTerminalLogs([
+        "$ cat public_key.pub",
+        "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDC7FwVvJ38g/1G+...",
+        "Comment: lohita-workstation-production",
+        "Key fingerprint: SHA256:f8+3/l181+ZohoInternSystemsKey",
+        "Authorized logins enabled from secure nodes."
+      ]);
+    } else if (cmd === "credentials") {
+      setTerminalLogs([
+        "$ ./fetch_credentials.sh",
+        "--- Lohita V Credentials ---",
+        "EMAIL:      lohitavenkatesh@gmail.com",
+        "PHONE:      +91 93604 36504",
+        "GITHUB:     https://github.com/lohita181",
+        "LINKEDIN:   https://linkedin.com/in/lohita-venkatesan-37345125b",
+        "STATUS:     Active SWE & Full-Stack job hunt in progress..."
       ]);
     }
   };
@@ -92,25 +60,27 @@ export default function Contact() {
       <div className="max-w-5xl mx-auto relative z-10">
         {/* Section Heading */}
         <div className="flex flex-col space-y-2 mb-16 text-center">
-          <span className="text-emerald-400 font-mono text-sm tracking-wider uppercase">// 05. CONTACT DISPATCH</span>
+          <span className="text-emerald-400 font-mono text-sm tracking-wider uppercase">// 05. SYSTEM TELEMETRY</span>
           <h2 className="text-3xl sm:text-4xl font-bold text-white tracking-tight">
-            Initiate Contact
+            Get In Touch
           </h2>
           <div className="w-12 h-1 bg-emerald-500 rounded mt-2 mx-auto" />
         </div>
 
         {/* Dual Column Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-stretch">
           
           {/* Left Column: Direct Links & Fast Copy */}
-          <div className="lg:col-span-5 space-y-6 text-left">
-            <h3 className="text-xl font-bold text-white font-mono">Direct Channels</h3>
-            <p className="text-slate-400 text-sm leading-relaxed">
-              If you have an open Software Engineer role, want to talk backend engineering, or want to discuss domain-specific LLM setups, ping me directly. Let&apos;s build something.
-            </p>
+          <div className="lg:col-span-5 space-y-6 text-left flex flex-col justify-between">
+            <div className="space-y-4">
+              <h3 className="text-xl font-bold text-white font-mono">Communication Nodes</h3>
+              <p className="text-slate-400 text-sm leading-relaxed">
+                If you have an open Software Engineer role, want to talk backend engineering, or want to discuss domain-specific LLM setups, ping me directly. Let&apos;s build something.
+              </p>
+            </div>
 
             {/* Email Copy Card */}
-            <div className="p-4 rounded-xl border border-slate-800 bg-[#080d19] flex items-center justify-between">
+            <div className="p-4 rounded-xl border border-slate-800 bg-[#080d19] flex items-center justify-between mt-4">
               <div className="flex items-center space-x-3">
                 <Mail className="w-5 h-5 text-emerald-400" />
                 <div className="font-mono text-xs">
@@ -120,7 +90,7 @@ export default function Contact() {
               </div>
               <button
                 onClick={handleCopyEmail}
-                className="p-2 rounded bg-[#0f182a] hover:bg-slate-800 border border-slate-800 text-slate-400 hover:text-white transition-colors duration-200"
+                className="p-2 rounded bg-[#0f182a] hover:bg-slate-800 border border-slate-800 text-slate-400 hover:text-white transition-colors duration-200 cursor-pointer"
                 title="Copy email to clipboard"
               >
                 {copied ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
@@ -128,7 +98,7 @@ export default function Contact() {
             </div>
 
             {/* Social Link Cards */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-4 mt-4">
               <a
                 href="https://www.linkedin.com/in/lohita-venkatesan-37345125b"
                 target="_blank"
@@ -164,130 +134,100 @@ export default function Contact() {
             </div>
           </div>
 
-          {/* Right Column: Dynamic Form & Shell Console */}
-          <div className="lg:col-span-7 space-y-6">
-            <div className="relative rounded-xl border border-slate-800 bg-[#080d19] overflow-hidden terminal-window text-left">
-              {/* Form Title bar */}
+          {/* Right Column: Systems monitor console */}
+          <div className="lg:col-span-7 flex flex-col justify-between space-y-4">
+            <div className="relative rounded-xl border border-slate-800 bg-[#080d19] overflow-hidden terminal-window text-left flex-1 flex flex-col justify-between min-h-[350px]">
+              
+              {/* Terminal Title bar */}
               <div className="flex items-center justify-between px-4 py-2.5 bg-[#0b1222] border-b border-slate-900">
                 <div className="flex items-center space-x-2 font-mono text-xs">
                   <Terminal className="w-3.5 h-3.5 text-emerald-400" />
-                  <span className="text-slate-300">write_message.sh</span>
+                  <span className="text-slate-300">systems_monitor.sh</span>
                 </div>
-                <div className="flex items-center space-x-1">
-                  <span className="w-2 h-2 rounded-full bg-slate-700" />
-                  <span className="w-2 h-2 rounded-full bg-slate-700" />
-                  <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                <div className="flex items-center space-x-1.5">
+                  <span className="w-2.5 h-2.5 rounded-full bg-rose-500/60 inline-block" />
+                  <span className="w-2.5 h-2.5 rounded-full bg-amber-500/60 inline-block" />
+                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-500/60 inline-block" />
                 </div>
               </div>
 
-              {/* Form Content */}
-              {status === "idle" || status === "sending" ? (
-                <form onSubmit={handleSend} className="p-6 space-y-4 font-mono text-xs sm:text-sm">
-                  <div className="space-y-1">
-                    <label htmlFor="name" className="block text-slate-500">SENDER_NAME:</label>
-                    <input
-                      id="name"
-                      type="text"
-                      name="name"
-                      value={formData.name}
-                      onChange={handleInputChange}
-                      required
-                      placeholder="e.g. Hiring Manager"
-                      className="w-full bg-[#05070f] border border-slate-800 focus:border-emerald-500/60 rounded px-3 py-2 text-slate-200 focus:outline-none transition-colors duration-200"
-                    />
+              {/* Console logs output */}
+              <div className="p-6 font-mono text-xs sm:text-sm text-slate-400 space-y-2 select-text overflow-y-auto flex-1">
+                {/* Stats Dashboard */}
+                <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 border-b border-slate-900 pb-4 mb-4 text-[11px] sm:text-xs">
+                  <div className="flex items-center space-x-1.5 text-slate-500">
+                    <Cpu className="w-3.5 h-3.5 text-cyan-400" />
+                    <span>LOAD: [||||||....] 64%</span>
                   </div>
-
-                  <div className="space-y-1">
-                    <label htmlFor="email" className="block text-slate-500">SENDER_EMAIL:</label>
-                    <input
-                      id="email"
-                      type="email"
-                      name="email"
-                      value={formData.email}
-                      onChange={handleInputChange}
-                      required
-                      placeholder="e.g. manager@company.com"
-                      className="w-full bg-[#05070f] border border-slate-800 focus:border-emerald-500/60 rounded px-3 py-2 text-slate-200 focus:outline-none transition-colors duration-200"
-                    />
+                  <div className="flex items-center space-x-1.5 text-slate-500">
+                    <Server className="w-3.5 h-3.5 text-emerald-400" />
+                    <span>UPTIME: 10452 hours</span>
                   </div>
-
-                  <div className="space-y-1">
-                    <label htmlFor="message" className="block text-slate-500">MESSAGE_PACKET_CONTENT:</label>
-                    <textarea
-                      id="message"
-                      name="message"
-                      value={formData.message}
-                      onChange={handleInputChange}
-                      required
-                      rows={4}
-                      placeholder="Type your message here..."
-                      className="w-full bg-[#05070f] border border-slate-800 focus:border-emerald-500/60 rounded px-3 py-2 text-slate-200 focus:outline-none transition-colors duration-200 resize-none"
-                    />
+                  <div className="flex items-center space-x-1.5 text-slate-500">
+                    <Network className="w-3.5 h-3.5 text-teal-400" />
+                    <span>PORT: 8080 (ESTABLISHED)</span>
                   </div>
-
-                  <button
-                    type="submit"
-                    disabled={status === "sending" || !formData.name || !formData.email || !formData.message}
-                    className="w-full py-2.5 px-4 rounded bg-emerald-500 hover:bg-emerald-400 disabled:bg-slate-800 text-slate-950 font-bold transition-all duration-300 flex items-center justify-center space-x-2 disabled:cursor-not-allowed cursor-pointer"
-                  >
-                    {status === "sending" ? (
-                      <>
-                        <Loader2 className="w-4 h-4 animate-spin text-slate-950" />
-                        <span>Sending message packet...</span>
-                      </>
-                    ) : (
-                      <>
-                        <Send className="w-4 h-4 text-slate-950" />
-                        <span>Execute message_send.sh</span>
-                      </>
-                    )}
-                  </button>
-                </form>
-              ) : (
-                /* Success / Error Terminal Log */
-                <div className="p-6 font-mono text-[11px] sm:text-xs text-left overflow-x-auto space-y-2 select-text bg-[#05070f]">
-                  {terminalOutput.map((line, lIdx) => {
-                    let textColor = "text-slate-400";
-                    if (line.startsWith("$")) {
-                      textColor = "text-cyan-400";
-                    } else if (
-                      line.includes("200 OK") || 
-                      line.includes("Response Packet") ||
-                      line.includes("delivered")
-                    ) {
-                      textColor = "text-emerald-400";
-                    } else if (
-                      line.includes("500") || 
-                      line.includes("Error Packet") || 
-                      line.includes("failed")
-                    ) {
-                      textColor = "text-rose-500 font-semibold";
-                    }
-                    return (
-                      <div key={lIdx} className={textColor}>
-                        {line}
-                      </div>
-                    );
-                  })}
-                  
-                  <div className="pt-4 border-t border-slate-900 mt-4 flex justify-between items-center text-[10px] text-slate-500 select-none">
-                    <span>
-                      STATUS: {status === "success" ? "DISPATCH_SUCCESS" : "DISPATCH_FAILED"}
-                    </span>
-                    <button
-                      onClick={() => {
-                        setStatus("idle");
-                        if (status === "success") {
-                          setFormData({ name: "", email: "", message: "" });
-                        }
-                      }}
-                      className="text-emerald-400 hover:underline"
-                    >
-                      {status === "success" ? "[Send Another Message]" : "[Edit Form & Retry]"}
-                    </button>
+                  <div className="flex items-center space-x-1.5 text-slate-500">
+                    <ShieldCheck className="w-3.5 h-3.5 text-purple-400" />
+                    <span>SSH-RSA: KEY_ENABLED</span>
                   </div>
                 </div>
-              )}
+
+                {/* Command Outputs */}
+                <div className="space-y-1">
+                  {terminalLogs.map((log, index) => (
+                    <div 
+                      key={index}
+                      className={
+                        log.startsWith("$")
+                          ? "text-cyan-400"
+                          : log.startsWith("Error") || log.includes("failed")
+                          ? "text-rose-500"
+                          : log.startsWith("ssh-rsa") || log.startsWith("---")
+                          ? "text-slate-300 font-bold"
+                          : "text-slate-400"
+                      }
+                    >
+                      {log}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Macro Buttons / Actions */}
+              <div className="bg-[#0b1222] border-t border-slate-900 p-4 grid grid-cols-3 gap-2.5 text-center font-mono text-[10px] sm:text-xs">
+                <button
+                  onClick={() => executeCommand("traceroute")}
+                  className={`py-2 px-1 rounded border transition-all duration-300 cursor-pointer ${
+                    activeCommand === "traceroute"
+                      ? "border-cyan-500 bg-cyan-500/10 text-cyan-400"
+                      : "border-slate-800 hover:border-slate-600 bg-[#070b13] text-slate-400 hover:text-slate-200"
+                  }`}
+                >
+                  ./traceroute
+                </button>
+                <button
+                  onClick={() => executeCommand("sshkey")}
+                  className={`py-2 px-1 rounded border transition-all duration-300 cursor-pointer ${
+                    activeCommand === "sshkey"
+                      ? "border-emerald-500 bg-emerald-500/10 text-emerald-400"
+                      : "border-slate-800 hover:border-slate-600 bg-[#070b13] text-slate-400 hover:text-slate-200"
+                  }`}
+                >
+                  cat public_key
+                </button>
+                <button
+                  onClick={() => executeCommand("credentials")}
+                  className={`py-2 px-1 rounded border transition-all duration-300 cursor-pointer ${
+                    activeCommand === "credentials"
+                      ? "border-teal-500 bg-teal-500/10 text-teal-400"
+                      : "border-slate-800 hover:border-slate-600 bg-[#070b13] text-slate-400 hover:text-slate-200"
+                  }`}
+                >
+                  ./credentials
+                </button>
+              </div>
+
             </div>
           </div>
 
