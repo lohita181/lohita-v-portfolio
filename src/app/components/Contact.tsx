@@ -20,7 +20,7 @@ export default function Contact() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSend = (e: React.FormEvent) => {
+  const handleSend = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.name || !formData.email || !formData.message) return;
 
@@ -33,21 +33,55 @@ export default function Contact() {
       `1 packets transmitted, 1 received, 0% packet loss`,
       `$ curl -X POST -H "Content-Type: application/json" \\`,
       `  -d '{"sender":"${formData.name}","email":"${formData.email}"}' \\`,
-      `  https://api.lohita.dev/v1/contact`,
+      `  https://api.web3forms.com/submit`,
     ]);
 
-    setTimeout(() => {
-      setStatus("success");
+    try {
+      // NOTE: Get your free access key by typing your email at https://web3forms.com
+      // Once you have it, replace the placeholder below with your key.
+      const accessKey = "YOUR_ACCESS_KEY_HERE"; 
+      
+      const response = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          access_key: accessKey,
+          name: formData.name,
+          email: formData.email,
+          message: formData.message,
+          subject: `Portfolio Message from ${formData.name}`,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (response.status === 200 && result.success) {
+        setStatus("success");
+        setTerminalOutput((prev) => [
+          ...prev,
+          `HTTP/1.1 200 OK`,
+          `Content-Type: application/json`,
+          `Date: ${new Date().toUTCString()}`,
+          `Server: Web3Forms/1.0.0`,
+          `Connection: keep-alive`,
+          `Response Packet: {"status":"delivered","message":"Thank you, ${formData.name}. Web3Forms has dispatched this message."}`,
+        ]);
+      } else {
+        throw new Error(result.message || "Bad Request - Invalid or missing access key");
+      }
+    } catch (err: any) {
+      setStatus("error");
       setTerminalOutput((prev) => [
         ...prev,
-        `HTTP/1.1 200 OK`,
+        `HTTP/1.1 500 Internal Server Error`,
         `Content-Type: application/json`,
         `Date: ${new Date().toUTCString()}`,
-        `Server: Netlify/1.0.0`,
-        `Connection: keep-alive`,
-        `Response Packet: {"status":"delivered","message":"Thank you, ${formData.name}. Lohita will be notified shortly."}`,
+        `Error Packet: {"status":"failed","reason":"${err.message || "Failed to dispatch message packet."}"}`,
       ]);
-    }, 1500);
+    }
   };
 
   return (
@@ -210,33 +244,46 @@ export default function Contact() {
                   </button>
                 </form>
               ) : (
-                /* Success Terminal Log */
+                /* Success / Error Terminal Log */
                 <div className="p-6 font-mono text-[11px] sm:text-xs text-left overflow-x-auto space-y-2 select-text bg-[#05070f]">
-                  {terminalOutput.map((line, lIdx) => (
-                    <div 
-                      key={lIdx} 
-                      className={
-                        line.startsWith("$") 
-                          ? "text-cyan-400" 
-                          : line.includes("200 OK") || line.includes("Response Packet")
-                          ? "text-emerald-400" 
-                          : "text-slate-400"
-                      }
-                    >
-                      {line}
-                    </div>
-                  ))}
+                  {terminalOutput.map((line, lIdx) => {
+                    let textColor = "text-slate-400";
+                    if (line.startsWith("$")) {
+                      textColor = "text-cyan-400";
+                    } else if (
+                      line.includes("200 OK") || 
+                      line.includes("Response Packet") ||
+                      line.includes("delivered")
+                    ) {
+                      textColor = "text-emerald-400";
+                    } else if (
+                      line.includes("500") || 
+                      line.includes("Error Packet") || 
+                      line.includes("failed")
+                    ) {
+                      textColor = "text-rose-500 font-semibold";
+                    }
+                    return (
+                      <div key={lIdx} className={textColor}>
+                        {line}
+                      </div>
+                    );
+                  })}
                   
                   <div className="pt-4 border-t border-slate-900 mt-4 flex justify-between items-center text-[10px] text-slate-500 select-none">
-                    <span>STATUS: DISPATCH_SUCCESS</span>
+                    <span>
+                      STATUS: {status === "success" ? "DISPATCH_SUCCESS" : "DISPATCH_FAILED"}
+                    </span>
                     <button
                       onClick={() => {
                         setStatus("idle");
-                        setFormData({ name: "", email: "", message: "" });
+                        if (status === "success") {
+                          setFormData({ name: "", email: "", message: "" });
+                        }
                       }}
                       className="text-emerald-400 hover:underline"
                     >
-                      [Send Another Message]
+                      {status === "success" ? "[Send Another Message]" : "[Edit Form & Retry]"}
                     </button>
                   </div>
                 </div>
