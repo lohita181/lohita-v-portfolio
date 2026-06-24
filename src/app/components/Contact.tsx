@@ -35,7 +35,7 @@ export default function Contact() {
         </div>
 
         <p className="text-slate-400 text-sm max-w-xl mx-auto leading-relaxed mb-12">
-          I am actively seeking full-time Software Engineer or Full-Stack roles at product companies in India. Whether you have an opportunity or just want to discuss backend architecture and LLMs, let&apos;s talk.
+          I am actively seeking full-time Software Engineer or Full-Stack roles at product companies in India, as well as remote opportunities worldwide. Whether you have an opportunity or just want to discuss backend architecture and LLMs, let&apos;s talk.
         </p>
 
         {/* Contact Credentials Grid */}
